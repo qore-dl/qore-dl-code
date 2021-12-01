@@ -1,0 +1,122 @@
+apiVersion: "kubeflow.org/v1"
+kind: "TFJob"
+metadata:
+  name: "re1"
+  namespace: re1
+spec:
+  tfReplicaSpecs:
+    PS:
+      replicas: 2
+      restartPolicy: Never
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 10
+                preference:
+                  matchExpressions:
+                  - key: woksch
+                    operator: In
+                    values:
+                    - "true"
+              - weight: 5
+                preference:
+                  matchExpressions:
+                  - key: wokpro
+                    operator: In
+                    values:
+                    - "0"
+                    - "1"
+              - weight: 2
+                preference:
+                  matchExpressions:
+                  - key: wokpro
+                    operator: In
+                    values:
+                    - "2"
+          containers:
+            - name: tensorflow
+              image: 192.168.128.17:5000/res2loss:1.2
+              args:
+              - --training_step=200
+              - --stack=10
+              - --channel1=16
+              - --channel2=32
+              - --channel3=64
+              - --channel4=128
+              - --interval=1.0
+              - --task_id=1
+              - --rtimes=1
+              - --retry=0
+              - --update_min_step=50
+              - --step_update=100
+              - --update_start=0.25
+              - --tag=ms
+              - --dbhost=192.168.128.10
+
+              volumeMounts:
+              - name: re1
+                mountPath: "/tmp/train"
+          volumes:
+          - name: re1
+            hostPath:
+              path: "/tfdata/k8snfs/re1"
+    Worker:
+      replicas: 4
+      restartPolicy: Never
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 10
+                preference:
+                  matchExpressions:
+                  - key: woksch
+                    operator: In
+                    values:
+                    - "true"
+              - weight: 5
+                preference:
+                  matchExpressions:
+                  - key: wokpro
+                    operator: In
+                    values:
+                    - "0"
+                    - "1"
+              - weight: 2
+                preference:
+                  matchExpressions:
+                  - key: wokpro
+                    operator: In
+                    values:
+                    - "2"
+          containers:
+            - name: tensorflow
+              image: 192.168.128.17:5000/res2loss:1.2
+              args:
+              - --training_step=200
+              - --stack=10
+              - --channel1=16
+              - --channel2=32
+              - --channel3=64
+              - --channel4=128
+              - --interval=1.0
+              - --task_id=1
+              - --rtimes=1
+              - --retry=0
+              - --update_min_step=50
+              - --step_update=100
+              - --update_start=0.25
+              - --tag=ms
+              - --dbhost=192.168.128.10
+              volumeMounts:
+              - name: re1
+                mountPath: "/tmp/train"
+                readOnly: false
+          volumes:
+          - name: re1
+            hostPath:
+              path: "/tfdata/k8snfs/re1"
+

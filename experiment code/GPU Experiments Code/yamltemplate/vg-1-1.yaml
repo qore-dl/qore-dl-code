@@ -1,0 +1,116 @@
+apiVersion: kubeflow.org/v1
+kind: TFJob
+metadata: {name: vg-1-1, namespace: vg-1-1}
+spec:
+  tfReplicaSpecs:
+    PS:
+      replicas: 1
+      restartPolicy: Never
+      template:
+        spec:
+          serviceAccount: vg-1-1-reader
+          hostPID: true
+          nodeSelector:
+            bias: good1
+#          affinity:
+#            nodeAffinity:
+#              preferredDuringSchedulingIgnoredDuringExecution:
+#              - preference:
+#                  matchExpressions:
+#                  - key: gpu
+#                    operator: In
+#                    values: ['true']
+#                weight: 20
+#              - preference:
+#                  matchExpressions:
+#                  - key: number
+#                    operator: In
+#                    values: ['4']
+#                weight: 5
+#              - preference:
+#                  matchExpressions:
+#                  - key: number
+#                    operator: In
+#                    values: ['1']
+#                weight: 2
+          containers:
+          - args: [--training_step=40000, --batch_size=8, --interval=0.3, --task_id=2,
+                     --rtimes=2, --tag=ms, --retry=0, --dbhost=172.16.190.97, --update_min_step=42000,--kernel=3,
+                     --step_update=200, --update_start=1.25, --update_end=1.75, --update_delay=2.0,
+                     --channel1=32, --channel2=64, --channel3=128, --channel4=256, --channel5=512,
+                     --num_layer1=2, --num_layer2=3, --num_layer3=1, --num_layer4=2, --num_layer5=2,
+                     --num_layers=21,--num_gpus=1]
+
+            image: 172.16.190.90:5000/vg-ps:1.0
+            name: tensorflow
+           # resources:
+           #   limits:
+           #     nvidia.com/gpu: 0
+           #   requests:
+           #     nvidia.com/gpu: 0
+            volumeMounts:
+            - {mountPath: /tmp/train, name: vg-1-1, readOnly: false}
+            - {mountPath: /tfdata/imagenet_data, name: vg-1-1-data, readOnly: false}
+          volumes:
+          - hostPath: {path: /data/tfdata/k8snfs/vg-1-1}
+            name: vg-1-1
+          - hostPath: {path: /data/tfdata/imagenet_data}
+            name: vg-1-1-data
+    Worker:
+      replicas: 2
+      restartPolicy: Never
+      template:
+        spec:
+          serviceAccount: vg-1-1-reader
+          hostPID: true
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: gpu
+                        operator: In
+                        values: ['true']
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - preference:
+                    matchExpressions:
+                      - key: gpu
+                        operator: In
+                        values: ['true']
+                  weight: 20
+                - preference:
+                    matchExpressions:
+                      - key: number
+                        operator: In
+                        values: ['4']
+                  weight: 5
+                - preference:
+                    matchExpressions:
+                      - key: number
+                        operator: In
+                        values: ['1']
+                  weight: 2
+          containers:
+          - args: [--training_step=40000, --batch_size=8, --interval=0.3, --task_id=1,
+                     --rtimes=1, --tag=ms, --retry=0, --dbhost=172.16.190.97, --update_min_step=42000,
+                     --step_update=200, --update_start=1.25, --update_end=1.75, --update_delay=2.0,
+                     --channel1=32, --channel2=64, --channel3=128, --channel4=256, --channel5=512,
+                     --num_layer1=2, --num_layer2=3, --num_layer3=1, --num_layer4=2, --num_layer5=2,
+                     --num_layers=21,--num_gpus=1,--kernel=3]
+
+            image: 172.16.190.90:5000/vg-worker:1.0
+            name: tensorflow
+            resources:
+              limits:
+                nvidia.com/gpu: 1
+              requests:
+                nvidia.com/gpu: 1
+            volumeMounts:
+            - {mountPath: /tmp/train, name: vg-1-1, readOnly: false}
+            - {mountPath: /tfdata/imagenet_data, name: vg-1-1-data, readOnly: false}
+          volumes:
+          - hostPath: {path: /data/tfdata/k8snfs/vg-1-1}
+            name: vg-1-1
+          - hostPath: {path: /data/tfdata/imagenet_data}
+            name: vg-1-1-data
+

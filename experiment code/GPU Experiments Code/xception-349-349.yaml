@@ -1,0 +1,86 @@
+apiVersion: kubeflow.org/v1
+kind: TFJob
+metadata: {name: xception-349-349, namespace: xception-349-349}
+spec:
+  tfReplicaSpecs:
+    PS:
+      replicas: 1
+      restartPolicy: Never
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - preference:
+                  matchExpressions:
+                  - key: woksch
+                    operator: In
+                    values: ['true']
+                weight: 10
+              - preference:
+                  matchExpressions:
+                  - key: wokpro
+                    operator: In
+                    values: ['0', '1', '2']
+                weight: 5
+              - preference:
+                  matchExpressions:
+                  - key: wokpro
+                    operator: In
+                    values: ['3']
+                weight: 2
+          containers:
+          - args: [--training_step=100, --batch_size=446, --interval=0.8, --task_id=349,
+              --rtimes=349, --tag=ms, --retry=0, --dbhost=192.168.128.10, --update_min_step=400,
+              --step_update=200, --update_start=0.25, --update_end=0.75, --update_delay=2.0,
+              --repeat=9, --channel1=24, --channel2=32, --channel3=160, --channel4=160,
+              --channel5=856, --channel6=1280, --channel7=1600, --channel8=2096]
+            image: 192.168.128.17:5000/xceloss:1.2
+            name: tensorflow
+            volumeMounts:
+            - {mountPath: /tmp/train, name: xception-349-349, readOnly: false}
+          volumes:
+          - hostPath: {path: /tfdata/k8snfs/xception-349-349}
+            name: xception-349-349
+    Worker:
+      replicas: 2
+      restartPolicy: Never
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - preference:
+                  matchExpressions:
+                  - key: woksch
+                    operator: In
+                    values: ['true']
+                weight: 10
+              - preference:
+                  matchExpressions:
+                  - key: wokpro
+                    operator: In
+                    values: ['0', '1', '2']
+                weight: 5
+              - preference:
+                  matchExpressions:
+                  - key: wokpro
+                    operator: In
+                    values: ['3']
+                weight: 2
+          containers:
+          - args: [--training_step=100, --batch_size=446, --interval=0.8, --task_id=349,
+              --rtimes=349, --tag=ms, --retry=0, --dbhost=192.168.128.10, --update_min_step=400,
+              --step_update=200, --update_start=0.25, --update_end=0.75, --update_delay=2.0,
+              --repeat=9, --channel1=24, --channel2=32, --channel3=160, --channel4=160,
+              --channel5=856, --channel6=1280, --channel7=1600, --channel8=2096]
+            image: 192.168.128.17:5000/xceloss:1.2
+            name: tensorflow
+            resources:
+              limits: {cpu: 6415m, memory: 10820Mi}
+              requests: {cpu: 6415m, memory: 10820Mi}
+            volumeMounts:
+            - {mountPath: /tmp/train, name: xception-349-349, readOnly: false}
+          volumes:
+          - hostPath: {path: /tfdata/k8snfs/xception-349-349}
+            name: xception-349-349

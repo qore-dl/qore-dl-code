@@ -1,0 +1,113 @@
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: vgg-2-2
+  name: vgg-2-2-pod-reader
+rules:
+  - apiGroups: [""] # The API group "" indicates the core API Group.
+    resources:
+    - configmaps
+    - secrets
+    - nodes
+    - nodes/metrics
+    - nodes/stats
+    - nodes/log
+    - nodes/spec
+    - nodes/proxy
+    - pods
+    - services
+    - resourcequotas
+    - replicationcontrollers
+    - limitranges
+    - persistentvolumeclaims
+    - persistentvolumes
+    - namespaces
+    - endpoints
+    - proxy
+    verbs:
+    - list
+    - watch
+    - get
+  - apiGroups:
+    - extensions
+    resources:
+    - daemonsets
+    - deployments
+    - replicasets
+    - ingresses
+    verbs:
+    - list
+    - watch
+    - get
+  - apiGroups:
+    - apps
+    resources:
+    - statefulsets
+    - daemonsets
+    - deployments
+    - replicasets
+    verbs:
+    - list
+    - watch
+    - get
+  - apiGroups:
+    - batch
+    resources:
+    - cronjobs
+    - jobs
+    verbs:
+    - list
+    - watch
+    - get
+  - apiGroups:
+    - autoscaling
+    resources:
+    - horizontalpodautoscalers
+    verbs:
+    - list
+    - watch
+  - apiGroups:
+    - authentication.k8s.io
+    resources:
+    - tokenreviews
+    verbs:
+    - create
+  - apiGroups:
+    - kubeflow.org
+    resources:
+    - TFJob
+    verbs:
+    - list
+    - watch
+    - get
+  - apiGroups:
+    - authorization.k8s.io
+    resources:
+    - subjectaccessreviews
+    verbs:
+    - create
+    nonResourceURLs: []
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vgg-2-2-reader
+  namespace: vgg-2-2
+
+---
+
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: read-pods
+  namespace: vgg-2-2 # 这里表明仅授权读取"development" namespace中的资源，若不定义该字段，则表示整个集群的Pod资源都可访问
+subjects:
+- kind: ServiceAccount
+  name: vgg-2-2-reader
+  namespace: vgg-2-2
+roleRef:
+  kind: Role
+  name: vgg-2-2-pod-reader
+  apiGroup: rbac.authorization.k8s.io

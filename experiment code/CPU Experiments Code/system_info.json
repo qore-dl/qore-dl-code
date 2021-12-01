@@ -1,0 +1,88 @@
+{
+    "task_id": [
+        681,
+        736,
+        536,
+        741,
+        50
+    ],
+    "rtimes": [
+        681,
+        736,
+        536,
+        741,
+        50
+    ],
+    "size": 20,
+    "training_step": [
+        1120,
+        1120,
+        1120,
+        1120,
+        1120
+    ],
+    "ps_replicas": [
+        2,
+        2,
+        2,
+        2,
+        2
+    ],
+    "ns": [
+    ],
+    "through": {},
+    "nslayout": {
+    },
+    "count": 0,
+    "worker_replicas": [
+        4,
+        4,
+        4,
+        4,
+        4
+    ],
+    "interval": [
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8
+    ],
+    "batch_size": [
+        128,
+        128,
+        128,
+        128,
+        128
+    ],
+    "tag": [
+        "ms",
+        "ms",
+        "ms",
+        "ms",
+        "ms"
+    ],
+    "creation": [
+    ],
+    "endtime": [],
+    "start": false,
+    "reload": 0,
+    "buffercount": 0,
+    "buffer": [],
+    "base": "vgg-681-681",
+    "last": "res-292-292",
+    "next": [],
+    "step_base": {
+        "vgg-348-348": 47
+    },
+    "retry": [],
+    "solution": {},
+    "modulate": false,
+    "nexttimes": {
+    },
+    "finish": [
+
+    ],
+    "fail": [],
+    "aim": []
+}

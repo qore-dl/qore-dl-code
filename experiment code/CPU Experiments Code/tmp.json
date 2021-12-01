@@ -1,0 +1,19 @@
+{
+    "apiVersion": "v1",
+    "kind": "Namespace",
+    "metadata": {
+        "creationTimestamp": "2020-03-12T09:46:08Z",
+        "deletionTimestamp": "2020-05-11T07:21:41Z",
+        "name": "xception-361-361",
+        "resourceVersion": "48128585",
+        "selfLink": "/api/v1/namespaces/xception-361-361",
+        "uid": "4cb1efcf-6446-11ea-a4e2-fa163e330eaa"
+    },
+    "spec": {
+        "finalizers": [
+        ]
+    },
+    "status": {
+        "phase": "Terminating"
+    }
+}

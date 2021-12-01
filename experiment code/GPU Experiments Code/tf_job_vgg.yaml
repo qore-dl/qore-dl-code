@@ -1,0 +1,75 @@
+
+apiVersion: "kubeflow.org/v1"
+kind: "TFJob"
+metadata:
+  name: "vgg5"
+  namespace: vgg5
+spec:
+  tfReplicaSpecs:
+    PS:
+      replicas: 2
+      restartPolicy: Never
+      template:
+        spec:
+          containers:
+            - name: tensorflow
+              image: 192.168.128.17:5000/vggdb:1.5
+              args:
+              - --training_step=100
+              - --channel1=64
+              - --channel2=128
+              - --channel3=256
+              - --channel4=512
+              - --channel5=512
+              - --num_layer1=2
+              - --num_layer2=2
+              - --num_layer3=4
+              - --num_layer4=4
+              - --num_layer5=4
+              - --num_layers=19
+              - --interval=1.0
+              - --task_id=1
+              - --rtimes=1
+              - --tag='ms'
+              volumeMounts:
+              - name: vgg5
+                mountPath: "/tmp/train"
+                readOnly: false
+          volumes:
+          - name: vgg5
+            hostPath:
+              path: '/tfdata/k8snfs/vgg5'
+    Worker:
+      replicas: 4
+      restartPolicy: Never
+      template:
+        spec:
+          containers:
+            - name: tensorflow
+              image: 192.168.128.17:5000/vggdb:1.5
+              args:
+              - --training_step=100
+              - --channel1=64
+              - --channel2=128
+              - --channel3=256
+              - --channel4=512
+              - --channel5=512
+              - --num_layer1=2
+              - --num_layer2=2
+              - --num_layer3=4
+              - --num_layer4=4
+              - --num_layer5=4
+              - --interval=1.0
+              - --task_id=1
+              - --rtimes=1
+              - --tag='ms'
+              volumeMounts:
+              - name: vgg5
+                mountPath: "/tmp/train"
+                readOnly: false
+          volumes:
+          - name: vgg5
+            hostPath:
+              path: '/tfdata/k8snfs/vgg5'
+
+

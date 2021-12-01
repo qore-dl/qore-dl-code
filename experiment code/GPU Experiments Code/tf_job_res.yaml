@@ -1,0 +1,138 @@
+apiVersion: "kubeflow.org/v1"
+kind: "TFJob"
+metadata:
+  name: "res3"
+  namespace: res3
+spec:
+  tfReplicaSpecs:
+    PS:
+      replicas: 2
+      restartPolicy: Never
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 10
+                preference:
+                  matchExpressions:
+                  - key: woksch
+                    operator: In
+                    values:
+                    - "true"
+              - weight: 5
+                preference:
+                  matchExpressions:
+                  - key: wokpro
+                    operator: In
+                    values:
+                    - "0"
+                    - "1"
+              - weight: 2
+                preference:
+                  matchExpressions:
+                  - key: wokpro
+                    operator: In
+                    values:
+                    - "2"
+          containers:
+            - name: tensorflow
+              image: 192.168.128.17:5000/resloss:1.2
+              args:
+              - --rtimes=3
+              - --training_step=200
+              - --bottle=1
+              - --layer1=3
+              - --layer2=4
+              - --layer3=8
+              - --layer4=3
+              - --channel1=32
+              - --channel2=48
+              - --channel3=128
+              - --channel4=256
+              - --interval=1.0
+              - --task_id=1
+              - --rtimes=1
+              - --retry=0
+              - --update_min_step=50
+              - --step_update=100
+              - --update_start=0.25
+              - --tag=ms
+              - --dbhost=192.168.128.10
+              volumeMounts:
+              - name: res3
+                mountPath: "/tmp/train"
+                readOnly: false
+
+          volumes:
+          - name: res3
+            hostPath:
+              path: '/tfdata/k8snfs/res3'
+
+    Worker:
+      replicas: 4
+      restartPolicy: Never
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 10
+                preference:
+                  matchExpressions:
+                  - key: woksch
+                    operator: In
+                    values:
+                    - "true"
+              - weight: 5
+                preference:
+                  matchExpressions:
+                  - key: wokpro
+                    operator: In
+                    values:
+                    - "0"
+                    - "1"
+              - weight: 2
+                preference:
+                  matchExpressions:
+                  - key: wokpro
+                    operator: In
+                    values:
+                    - "2"
+          containers:
+            - name: tensorflow
+              image: 192.168.128.17:5000/resloss:1.2
+              args:
+              - --rtimes=3
+              - --training_step=200
+              - --bottle=1
+              - --layer1=3
+              - --layer2=4
+              - --layer3=8
+              - --layer4=3
+              - --channel1=32
+              - --channel2=48
+              - --channel3=128
+              - --channel4=256
+              - --interval=1.0
+              - --task_id=1
+              - --rtimes=1
+              - --retry=0
+              - --update_min_step=50
+              - --step_update=100
+              - --update_start=0.25
+              - --tag=ms
+              - --dbhost=192.168.128.10
+              volumeMounts:
+              - name: res3
+                mountPath: "/tmp/train"
+                readOnly: false
+          volumes:
+          - name: res3
+            hostPath:
+              path: '/tfdata/k8snfs/res3'
+
+
+
+
+

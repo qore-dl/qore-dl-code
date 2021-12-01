@@ -1,0 +1,136 @@
+apiVersion: "kubeflow.org/v1"
+kind: "TFJob"
+metadata:
+  name: "xception1"
+  namespace: xception1
+spec:
+  tfReplicaSpecs:
+    PS:
+      replicas: 2
+      restartPolicy: Never
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 10
+                preference:
+                  matchExpressions:
+                  - key: woksch
+                    operator: In
+                    values:
+                    - "true"
+              - weight: 5
+                preference:
+                  matchExpressions:
+                  - key: wokpro
+                    operator: In
+                    values:
+                    - "0"
+                    - "1"
+              - weight: 2
+                preference:
+                  matchExpressions:
+                  - key: wokpro
+                    operator: In
+                    values:
+                    - "2"
+          containers:
+            - name: tensorflow
+              image: 192.168.128.17:5000/xceloss:1.2
+              args:
+              - --training_step=200
+              - --repeat=8
+              - --channel1=32
+              - --channel2=64
+              - --channel3=128
+              - --channel4=256
+              - --channel5=728
+              - --channel6=1024
+              - --channel7=1536
+              - --channel8=2048
+              - --interval=0.5
+              - --task_id=1
+              - --rtimes=1
+              - --retry=0
+              - --update_min_step=50
+              - --step_update=100
+              - --update_start=0.25
+              - --tag=ms
+              - --dbhost=192.168.128.10
+              volumeMounts:
+              - name: xception1
+                mountPath: "/tmp/train"
+                readOnly: false
+          volumes:
+          - name: xception1
+            hostPath:
+              path: '/tfdata/k8snfs/xception1'
+
+    Worker:
+      replicas: 4
+      restartPolicy: Never
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 10
+                preference:
+                  matchExpressions:
+                  - key: woksch
+                    operator: In
+                    values:
+                    - "true"
+              - weight: 5
+                preference:
+                  matchExpressions:
+                  - key: wokpro
+                    operator: In
+                    values:
+                    - "0"
+                    - "1"
+              - weight: 2
+                preference:
+                  matchExpressions:
+                  - key: wokpro
+                    operator: In
+                    values:
+                    - "2"
+          containers:
+            - name: tensorflow
+              image: 192.168.128.17:5000/xceloss:1.2
+              args:
+              - --training_step=200
+              - --repeat=8
+              - --channel1=32
+              - --channel2=64
+              - --channel3=128
+              - --channel4=256
+              - --channel5=728
+              - --channel6=1024
+              - --channel7=1536
+              - --channel8=2048
+              - --interval=0.5
+              - --task_id=1
+              - --rtimes=1
+              - --retry=0
+              - --update_min_step=50
+              - --step_update=100
+              - --update_start=0.25
+              - --tag=ms
+              - --dbhost=192.168.128.10
+
+              volumeMounts:
+              - name: xception1
+                mountPath: "/tmp/train"
+                readOnly: false
+          volumes:
+          - name: xception1
+            hostPath:
+              path: '/tfdata/k8snfs/xception1'
+
+
+
+
+
