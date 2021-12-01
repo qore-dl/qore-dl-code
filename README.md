@@ -27,7 +27,7 @@ The Testbed of the experiments are the (Kubernetes) clusters. For example 7-host
 
 ![Image text](https://raw.githubusercontent.com/qore-dl/qore-dl-code/main/images/resource_configuration.png)
 
-As for the parameter setting of $\alpha_1$ for normalized CPU / GPU utilization for CPU / GPU cluster and $\alpha_2$ for normalized Memory utlization. I run 2000+ DLT jobs in the Kuberentes clusters before the design of Qore-DL. 
+As for the parameter setting of !(http://latex.codecogs.com/svg.latex?\alpha_1) for normalized CPU / GPU utilization for CPU / GPU cluster and !(http://latex.codecogs.com/svg.latex?\alpha_2) for normalized Memory utlization. I run 2000+ DLT jobs in the Kuberentes clusters before the design of Qore-DL. 
 I found that in our 24-host clusters, the average cluster CPU utiliation and Memory utilization is about 46.62% and 16.73% when using Kubeflow to manage the DLT jobs. The following figure is an example, which is the CPU and Memory utilization trace for about 70 hours.
 
 ![Image text](https://raw.githubusercontent.com/qore-dl/qore-dl-code/main/images/Trace.png)
